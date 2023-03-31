@@ -2,6 +2,7 @@ pub mod mode;
 pub mod roll_result;
 
 use crate::roll::mode::*;
+use crate::roll::roll_result::RollResult;
 use tavern_die::die::Die;
 
 pub struct DieRoll {
@@ -58,5 +59,110 @@ impl Roll {
 
     pub fn add_die(&mut self, die: Die, roll_count: i64) {
         self.dice.push(DieRoll::new(die, roll_count))
+    }
+
+    pub fn roll(&self) -> RollResult {
+        match self.roll_mode {
+            RollMode::Normal => self.normal(),
+            RollMode::Reroll => self.reroll(),
+            RollMode::Success => self.success(),
+            RollMode::Failure => self.failure(),
+            RollMode::Exploding => self.exploding(),
+            RollMode::Compounding => self.compounding(),
+            RollMode::Penetrating => self.penetrating(),
+        }
+    }
+
+    fn roll_dice(&self) -> RollResult {
+        let mut result = RollResult::new();
+        for die_roll in self.dice {
+            for roll in die_roll.die.roll().results {
+                result.results.push(roll);
+            }
+        }
+        result
+    }
+
+    fn normal(&self) -> RollResult {
+        match self.comparison_mode {
+            ComparisonMode::Equal(_) => self.roll_dice(),
+            ComparisonMode::LessThan(target) => {
+                let mut result = RollResult::new();
+                for roll in self.roll_dice().results {
+                    if roll < target {
+                        result.results.push(roll);
+                    }
+                }
+                return result;
+            }
+            ComparisonMode::GreaterThan(target) => {
+                let mut result = RollResult::new();
+                for roll in self.roll_dice().results {
+                    if roll > target {
+                        result.results.push(roll);
+                    }
+                }
+                return result;
+            }
+        }
+    }
+
+    fn reroll(&self) -> RollResult {
+        match self.comparison_mode {
+            ComparisonMode::Equal(target) => {}
+            ComparisonMode::LessThan(target) => {}
+            ComparisonMode::GreaterThan(target) => {}
+        }
+        result
+    }
+
+    fn success(&self) -> RollResult {
+        let mut result = RollResult::new();
+        match self.comparison_mode {
+            ComparisonMode::Equal(_) => {}
+            ComparisonMode::LessThan(target) => {}
+            ComparisonMode::GreaterThan(target) => {}
+        }
+        result
+    }
+
+    fn failure(&self) -> RollResult {
+        let mut result = RollResult::new();
+        match self.comparison_mode {
+            ComparisonMode::Equal(_) => {}
+            ComparisonMode::LessThan(target) => {}
+            ComparisonMode::GreaterThan(target) => {}
+        }
+        result
+    }
+
+    fn exploding(&self) -> RollResult {
+        let mut result = RollResult::new();
+        match self.comparison_mode {
+            ComparisonMode::Equal(_) => {}
+            ComparisonMode::LessThan(target) => {}
+            ComparisonMode::GreaterThan(target) => {}
+        }
+        result
+    }
+
+    fn compounding(&self) -> RollResult {
+        let mut result = RollResult::new();
+        match self.comparison_mode {
+            ComparisonMode::Equal(_) => {}
+            ComparisonMode::LessThan(target) => {}
+            ComparisonMode::GreaterThan(target) => {}
+        }
+        result
+    }
+
+    fn penetrating(&self) -> RollResult {
+        let mut result = RollResult::new();
+        match self.comparison_mode {
+            ComparisonMode::Equal(_) => {}
+            ComparisonMode::LessThan(target) => {}
+            ComparisonMode::GreaterThan(target) => {}
+        }
+        result
     }
 }

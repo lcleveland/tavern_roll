@@ -113,7 +113,6 @@ impl Roll {
             ComparisonMode::LessThan(target) => {}
             ComparisonMode::GreaterThan(target) => {}
         }
-        result
     }
 
     fn success(&self) -> RollResult {

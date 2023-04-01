@@ -93,7 +93,7 @@ impl Roll {
                         result.results.push(roll);
                     }
                 }
-                return result;
+                result
             }
             ComparisonMode::GreaterThan(target) => {
                 let mut result = RollResult::new();
@@ -102,7 +102,7 @@ impl Roll {
                         result.results.push(roll);
                     }
                 }
-                return result;
+                result
             }
         }
     }

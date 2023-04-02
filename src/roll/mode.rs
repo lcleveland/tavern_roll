@@ -8,18 +8,17 @@ pub enum RollMode {
     /// If comparison is met adds roll to results and rolls again
     Exploding,
 
-    /// If comparison is met adds all rolls that match together in results
-    Compounding,
-
-    /// If comparison is met adds roll to results and rolls again, subtracting one from the
-    /// penetrated roll
-    Penetrating,
-
     /// If the comparison is met adds one to results to show as a success
     Success,
 
     /// If the comparison is NOT met adds one to results to show as a failure
     Failure,
+
+    /// Keeps a number of the highest dice in the roll
+    KeepHigh(i64),
+
+    /// Keep a number of the lowest dice in the roll
+    KeepLow(i64),
 }
 
 pub enum ComparisonMode {

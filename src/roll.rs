@@ -68,8 +68,8 @@ impl Roll {
             RollMode::Success => self.success(),
             RollMode::Failure => self.failure(),
             RollMode::Exploding => self.exploding(),
-            RollMode::Compounding => self.compounding(),
-            RollMode::Penetrating => self.penetrating(),
+            RollMode::KeepHigh(_) => self.keep_high(),
+            RollMode::KeepLow(_) => self.keep_low(),
         }
     }
 
@@ -231,22 +231,36 @@ impl Roll {
         result
     }
 
-    fn compounding(&self) -> RollResult {
-        let mut result = RollResult::new();
-        match self.comparison_mode {
-            ComparisonMode::Equal(_) => {}
-            ComparisonMode::LessThan(target) => {}
-            ComparisonMode::GreaterThan(target) => {}
+    fn keep_high(&self) -> RollResult {
+        let result = self.roll_dice();
+        if let RollMode::KeepHigh(target) = self.roll_mode {
+            if target >= result.results.len().try_into().unwrap() {
+                return result;
+            }
+            let mut high_results = RollResult::new();
+            for _ in 0..target {
+                high_results
+                    .results
+                    .push(*result.results.iter().max().unwrap());
+            }
+            return high_results;
         }
         result
     }
 
-    fn penetrating(&self) -> RollResult {
-        let mut result = RollResult::new();
-        match self.comparison_mode {
-            ComparisonMode::Equal(_) => {}
-            ComparisonMode::LessThan(target) => {}
-            ComparisonMode::GreaterThan(target) => {}
+    fn keep_low(&self) -> RollResult {
+        let result = self.roll_dice();
+        if let RollMode::KeepHigh(target) = self.roll_mode {
+            if target >= result.results.len().try_into().unwrap() {
+                return result;
+            }
+            let mut high_results = RollResult::new();
+            for _ in 0..target {
+                high_results
+                    .results
+                    .push(*result.results.iter().min().unwrap());
+            }
+            return high_results;
         }
         result
     }

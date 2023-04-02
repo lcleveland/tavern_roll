@@ -75,7 +75,7 @@ impl Roll {
 
     fn roll_dice(&self) -> RollResult {
         let mut result = RollResult::new();
-        for die_roll in self.dice {
+        for die_roll in self.dice.iter() {
             for roll in die_roll.die.roll().results {
                 result.results.push(roll);
             }
@@ -186,11 +186,47 @@ impl Roll {
     }
 
     fn exploding(&self) -> RollResult {
-        let mut result = RollResult::new();
+        let mut result = self.roll_dice();
         match self.comparison_mode {
-            ComparisonMode::Equal(_) => {}
-            ComparisonMode::LessThan(target) => {}
-            ComparisonMode::GreaterThan(target) => {}
+            ComparisonMode::Equal(target) => {
+                if result.sum() == target {
+                    loop {
+                        let explode_results = self.roll_dice();
+                        for roll in explode_results.results.iter() {
+                            result.results.push(*roll);
+                        }
+                        if explode_results.sum() != target {
+                            break;
+                        }
+                    }
+                }
+            }
+            ComparisonMode::LessThan(target) => {
+                if result.sum() >= target {
+                    loop {
+                        let explode_results = self.roll_dice();
+                        for roll in explode_results.results.iter() {
+                            result.results.push(*roll);
+                        }
+                        if explode_results.sum() >= target {
+                            break;
+                        }
+                    }
+                }
+            }
+            ComparisonMode::GreaterThan(target) => {
+                if result.sum() <= target {
+                    loop {
+                        let explode_results = self.roll_dice();
+                        for roll in explode_results.results.iter() {
+                            result.results.push(*roll);
+                        }
+                        if explode_results.sum() <= target {
+                            break;
+                        }
+                    }
+                }
+            }
         }
         result
     }

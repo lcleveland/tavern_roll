@@ -84,43 +84,75 @@ impl Roll {
     }
 
     fn normal(&self) -> RollResult {
+        let mut result = RollResult::new();
         match self.comparison_mode {
-            ComparisonMode::Equal(_) => self.roll_dice(),
+            ComparisonMode::Equal(_) => {
+                result = self.roll_dice();
+            }
             ComparisonMode::LessThan(target) => {
-                let mut result = RollResult::new();
                 for roll in self.roll_dice().results {
                     if roll < target {
                         result.results.push(roll);
                     }
                 }
-                result
             }
             ComparisonMode::GreaterThan(target) => {
-                let mut result = RollResult::new();
                 for roll in self.roll_dice().results {
                     if roll > target {
                         result.results.push(roll);
                     }
                 }
-                result
             }
         }
+        result
     }
 
     fn reroll(&self) -> RollResult {
+        let mut result = self.roll_dice();
         match self.comparison_mode {
-            ComparisonMode::Equal(target) => {}
-            ComparisonMode::LessThan(target) => {}
-            ComparisonMode::GreaterThan(target) => {}
+            ComparisonMode::Equal(target) => {
+                while result.sum() == target {
+                    result = self.roll_dice();
+                }
+            }
+            ComparisonMode::LessThan(target) => {
+                while result.sum() >= target {
+                    result = self.roll_dice();
+                }
+            }
+            ComparisonMode::GreaterThan(target) => {
+                while result.sum() <= target {
+                    result = self.roll_dice();
+                }
+            }
         }
+        result
     }
 
     fn success(&self) -> RollResult {
         let mut result = RollResult::new();
         match self.comparison_mode {
-            ComparisonMode::Equal(_) => {}
-            ComparisonMode::LessThan(target) => {}
-            ComparisonMode::GreaterThan(target) => {}
+            ComparisonMode::Equal(target) => {
+                for roll in self.roll_dice().results {
+                    if roll == target {
+                        result.results.push(1);
+                    }
+                }
+            }
+            ComparisonMode::LessThan(target) => {
+                for roll in self.roll_dice().results {
+                    if roll < target {
+                        result.results.push(1);
+                    }
+                }
+            }
+            ComparisonMode::GreaterThan(target) => {
+                for roll in self.roll_dice().results {
+                    if roll > target {
+                        result.results.push(1);
+                    }
+                }
+            }
         }
         result
     }
@@ -128,9 +160,27 @@ impl Roll {
     fn failure(&self) -> RollResult {
         let mut result = RollResult::new();
         match self.comparison_mode {
-            ComparisonMode::Equal(_) => {}
-            ComparisonMode::LessThan(target) => {}
-            ComparisonMode::GreaterThan(target) => {}
+            ComparisonMode::Equal(target) => {
+                for roll in self.roll_dice().results {
+                    if roll != target {
+                        result.results.push(1);
+                    }
+                }
+            }
+            ComparisonMode::LessThan(target) => {
+                for roll in self.roll_dice().results {
+                    if roll >= target {
+                        result.results.push(1);
+                    }
+                }
+            }
+            ComparisonMode::GreaterThan(target) => {
+                for roll in self.roll_dice().results {
+                    if roll <= target {
+                        result.results.push(1);
+                    }
+                }
+            }
         }
         result
     }

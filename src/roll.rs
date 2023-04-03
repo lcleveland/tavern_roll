@@ -76,8 +76,8 @@ impl Roll {
     fn roll_dice(&self) -> RollResult {
         let mut result = RollResult::new();
         for die_roll in self.dice.iter() {
-            for roll in die_roll.die.roll().results {
-                result.results.push(roll);
+            for roll in die_roll.die.roll().dice_rolls {
+                result.dice_rolls.push(roll);
             }
         }
         result
@@ -90,16 +90,16 @@ impl Roll {
                 result = self.roll_dice();
             }
             ComparisonMode::LessThan(target) => {
-                for roll in self.roll_dice().results {
+                for roll in self.roll_dice().dice_rolls {
                     if roll < target {
-                        result.results.push(roll);
+                        result.dice_rolls.push(roll);
                     }
                 }
             }
             ComparisonMode::GreaterThan(target) => {
-                for roll in self.roll_dice().results {
+                for roll in self.roll_dice().dice_rolls {
                     if roll > target {
-                        result.results.push(roll);
+                        result.dice_rolls.push(roll);
                     }
                 }
             }
@@ -133,23 +133,23 @@ impl Roll {
         let mut result = RollResult::new();
         match self.comparison_mode {
             ComparisonMode::Equal(target) => {
-                for roll in self.roll_dice().results {
+                for roll in self.roll_dice().dice_rolls {
                     if roll == target {
-                        result.results.push(1);
+                        result.dice_rolls.push(1);
                     }
                 }
             }
             ComparisonMode::LessThan(target) => {
-                for roll in self.roll_dice().results {
+                for roll in self.roll_dice().dice_rolls {
                     if roll < target {
-                        result.results.push(1);
+                        result.dice_rolls.push(1);
                     }
                 }
             }
             ComparisonMode::GreaterThan(target) => {
-                for roll in self.roll_dice().results {
+                for roll in self.roll_dice().dice_rolls {
                     if roll > target {
-                        result.results.push(1);
+                        result.dice_rolls.push(1);
                     }
                 }
             }
@@ -161,23 +161,23 @@ impl Roll {
         let mut result = RollResult::new();
         match self.comparison_mode {
             ComparisonMode::Equal(target) => {
-                for roll in self.roll_dice().results {
+                for roll in self.roll_dice().dice_rolls {
                     if roll != target {
-                        result.results.push(1);
+                        result.dice_rolls.push(1);
                     }
                 }
             }
             ComparisonMode::LessThan(target) => {
-                for roll in self.roll_dice().results {
+                for roll in self.roll_dice().dice_rolls {
                     if roll >= target {
-                        result.results.push(1);
+                        result.dice_rolls.push(1);
                     }
                 }
             }
             ComparisonMode::GreaterThan(target) => {
-                for roll in self.roll_dice().results {
+                for roll in self.roll_dice().dice_rolls {
                     if roll <= target {
-                        result.results.push(1);
+                        result.dice_rolls.push(1);
                     }
                 }
             }
@@ -191,11 +191,11 @@ impl Roll {
             ComparisonMode::Equal(target) => {
                 if result.sum() == target {
                     loop {
-                        let explode_results = self.roll_dice();
-                        for roll in explode_results.results.iter() {
-                            result.results.push(*roll);
+                        let explode_dice_rolls = self.roll_dice();
+                        for roll in explode_dice_rolls.dice_rolls.iter() {
+                            result.dice_rolls.push(*roll);
                         }
-                        if explode_results.sum() != target {
+                        if explode_dice_rolls.sum() != target {
                             break;
                         }
                     }
@@ -204,11 +204,11 @@ impl Roll {
             ComparisonMode::LessThan(target) => {
                 if result.sum() >= target {
                     loop {
-                        let explode_results = self.roll_dice();
-                        for roll in explode_results.results.iter() {
-                            result.results.push(*roll);
+                        let explode_dice_rolls = self.roll_dice();
+                        for roll in explode_dice_rolls.dice_rolls.iter() {
+                            result.dice_rolls.push(*roll);
                         }
-                        if explode_results.sum() >= target {
+                        if explode_dice_rolls.sum() >= target {
                             break;
                         }
                     }
@@ -217,11 +217,11 @@ impl Roll {
             ComparisonMode::GreaterThan(target) => {
                 if result.sum() <= target {
                     loop {
-                        let explode_results = self.roll_dice();
-                        for roll in explode_results.results.iter() {
-                            result.results.push(*roll);
+                        let explode_dice_rolls = self.roll_dice();
+                        for roll in explode_dice_rolls.dice_rolls.iter() {
+                            result.dice_rolls.push(*roll);
                         }
-                        if explode_results.sum() <= target {
+                        if explode_dice_rolls.sum() <= target {
                             break;
                         }
                     }
@@ -234,16 +234,16 @@ impl Roll {
     fn keep_high(&self) -> RollResult {
         let result = self.roll_dice();
         if let RollMode::KeepHigh(target) = self.roll_mode {
-            if target >= result.results.len().try_into().unwrap() {
+            if target >= result.dice_rolls.len().try_into().unwrap() {
                 return result;
             }
-            let mut high_results = RollResult::new();
+            let mut high_dice_rolls = RollResult::new();
             for _ in 0..target {
-                high_results
-                    .results
-                    .push(*result.results.iter().max().unwrap());
+                high_dice_rolls
+                    .dice_rolls
+                    .push(*result.dice_rolls.iter().max().unwrap());
             }
-            return high_results;
+            return high_dice_rolls;
         }
         result
     }
@@ -251,16 +251,16 @@ impl Roll {
     fn keep_low(&self) -> RollResult {
         let result = self.roll_dice();
         if let RollMode::KeepHigh(target) = self.roll_mode {
-            if target >= result.results.len().try_into().unwrap() {
+            if target >= result.dice_rolls.len().try_into().unwrap() {
                 return result;
             }
-            let mut high_results = RollResult::new();
+            let mut high_dice_rolls = RollResult::new();
             for _ in 0..target {
-                high_results
-                    .results
-                    .push(*result.results.iter().min().unwrap());
+                high_dice_rolls
+                    .dice_rolls
+                    .push(*result.dice_rolls.iter().min().unwrap());
             }
-            return high_results;
+            return high_dice_rolls;
         }
         result
     }

@@ -11,7 +11,7 @@ impl RollResult {
 
     pub fn sum(&self) -> i64 {
         let mut sum: i64 = 0;
-        for result in self.results {
+        for result in self.results.iter() {
             sum += result;
         }
         sum

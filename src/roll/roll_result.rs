@@ -10,10 +10,6 @@ impl RollResult {
     }
 
     pub fn sum(&self) -> i64 {
-        let mut sum: i64 = 0;
-        for result in self.dice_rolls.iter() {
-            sum += result;
-        }
-        sum
+        self.dice_rolls.iter().sum()
     }
 }

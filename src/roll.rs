@@ -61,7 +61,7 @@ impl Roll {
         self.dice.push(DieRoll::new(die, roll_count))
     }
 
-    pub fn roll(&self) -> RollResult {
+    pub fn roll(&mut self) -> RollResult {
         match self.roll_mode {
             RollMode::Normal => self.normal(),
             RollMode::Reroll => self.reroll(),
@@ -73,17 +73,17 @@ impl Roll {
         }
     }
 
-    fn roll_dice(&self) -> RollResult {
+    fn roll_dice(&mut self) -> RollResult {
         let mut result = RollResult::new();
-        for die_roll in self.dice.iter() {
-            for roll in die_roll.die.roll().dice_rolls {
-                result.dice_rolls.push(roll);
+        for die_roll in &mut self.dice {
+            for _ in 0..die_roll.roll_count {
+                result.dice_rolls.extend(die_roll.die.roll().dice_rolls);
             }
         }
         result
     }
 
-    fn normal(&self) -> RollResult {
+    fn normal(&mut self) -> RollResult {
         let mut result = RollResult::new();
         match self.comparison_mode {
             ComparisonMode::Equal(_) => {
@@ -107,7 +107,7 @@ impl Roll {
         result
     }
 
-    fn reroll(&self) -> RollResult {
+    fn reroll(&mut self) -> RollResult {
         let mut result = self.roll_dice();
         match self.comparison_mode {
             ComparisonMode::Equal(target) => {
@@ -129,7 +129,7 @@ impl Roll {
         result
     }
 
-    fn success(&self) -> RollResult {
+    fn success(&mut self) -> RollResult {
         let mut result = RollResult::new();
         match self.comparison_mode {
             ComparisonMode::Equal(target) => {
@@ -157,7 +157,7 @@ impl Roll {
         result
     }
 
-    fn failure(&self) -> RollResult {
+    fn failure(&mut self) -> RollResult {
         let mut result = RollResult::new();
         match self.comparison_mode {
             ComparisonMode::Equal(target) => {
@@ -185,7 +185,7 @@ impl Roll {
         result
     }
 
-    fn exploding(&self) -> RollResult {
+    fn exploding(&mut self) -> RollResult {
         let mut result = self.roll_dice();
         match self.comparison_mode {
             ComparisonMode::Equal(target) => {
@@ -231,7 +231,7 @@ impl Roll {
         result
     }
 
-    fn keep_high(&self) -> RollResult {
+    fn keep_high(&mut self) -> RollResult {
         let result = self.roll_dice();
         if let RollMode::KeepHigh(target) = self.roll_mode {
             if target >= result.dice_rolls.len().try_into().unwrap() {
@@ -248,7 +248,7 @@ impl Roll {
         result
     }
 
-    fn keep_low(&self) -> RollResult {
+    fn keep_low(&mut self) -> RollResult {
         let result = self.roll_dice();
         if let RollMode::KeepHigh(target) = self.roll_mode {
             if target >= result.dice_rolls.len().try_into().unwrap() {

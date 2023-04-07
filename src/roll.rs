@@ -139,24 +139,18 @@ impl Roll {
         let mut result = RollResult::new();
         match self.comparison_mode {
             ComparisonMode::Equal(target) => {
-                for roll in self.roll_dice().dice_rolls {
-                    if roll != target {
-                        result.dice_rolls.push(1);
-                    }
+                if self.roll_dice().sum() != target {
+                    result.dice_rolls.push(1);
                 }
             }
             ComparisonMode::LessThan(target) => {
-                for roll in self.roll_dice().dice_rolls {
-                    if roll >= target {
-                        result.dice_rolls.push(1);
-                    }
+                if self.roll_dice().sum() >= target {
+                    result.dice_rolls.push(1);
                 }
             }
             ComparisonMode::GreaterThan(target) => {
-                for roll in self.roll_dice().dice_rolls {
-                    if roll <= target {
-                        result.dice_rolls.push(1);
-                    }
+                if self.roll_dice().sum() <= target {
+                    result.dice_rolls.push(1);
                 }
             }
         }

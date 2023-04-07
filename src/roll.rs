@@ -100,12 +100,12 @@ impl Roll {
                 }
             }
             ComparisonMode::LessThan(target) => {
-                while result.sum() >= target {
+                while result.sum() < target {
                     result = self.roll_dice();
                 }
             }
             ComparisonMode::GreaterThan(target) => {
-                while result.sum() <= target {
+                while result.sum() > target {
                     result = self.roll_dice();
                 }
             }

@@ -1,10 +1,10 @@
 pub mod die_roll;
 pub mod mode;
-pub mod roll_result;
+pub mod result;
 
 use crate::roll::die_roll::DieRoll;
 use crate::roll::mode::*;
-use crate::roll::roll_result::RollResult;
+use crate::roll::result::RollResult;
 use tavern_die::die::Die;
 
 pub struct Roll {

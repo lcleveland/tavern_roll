@@ -94,3 +94,18 @@ fn reroll_less_than_test() {
     roll.dice.push(DieRoll::new(die, 2));
     assert_eq!(roll.roll().sum(), 69);
 }
+
+#[test]
+fn success_equal_test() {
+    let die_rolls = vec![15, 15, 39];
+    let die = common::create_test_die(
+        die_rolls,
+        die::mode::RollMode::Normal,
+        die::mode::ComparisonMode::Equal(0),
+    );
+    let mut roll = Roll::default();
+    roll.roll_mode = RollMode::Success;
+    roll.comparison_mode = ComparisonMode::Equal(69);
+    roll.dice.push(DieRoll::new(die, 3));
+    assert_eq!(roll.roll().sum(), 1);
+}

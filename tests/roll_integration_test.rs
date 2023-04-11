@@ -109,3 +109,33 @@ fn success_equal_test() {
     roll.dice.push(DieRoll::new(die, 3));
     assert_eq!(roll.roll().sum(), 1);
 }
+
+#[test]
+fn success_greater_than_test() {
+    let die_rolls = vec![15, 15, 39];
+    let die = common::create_test_die(
+        die_rolls,
+        die::mode::RollMode::Normal,
+        die::mode::ComparisonMode::Equal(0),
+    );
+    let mut roll = Roll::default();
+    roll.roll_mode = RollMode::Success;
+    roll.comparison_mode = ComparisonMode::GreaterThan(68);
+    roll.dice.push(DieRoll::new(die, 3));
+    assert_eq!(roll.roll().sum(), 1);
+}
+
+#[test]
+fn success_less_than_test() {
+    let die_rolls = vec![15, 15, 39];
+    let die = common::create_test_die(
+        die_rolls,
+        die::mode::RollMode::Normal,
+        die::mode::ComparisonMode::Equal(0),
+    );
+    let mut roll = Roll::default();
+    roll.roll_mode = RollMode::Success;
+    roll.comparison_mode = ComparisonMode::LessThan(70);
+    roll.dice.push(DieRoll::new(die, 3));
+    assert_eq!(roll.roll().sum(), 1);
+}
